@@ -11,15 +11,19 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('m_user', function (Blueprint $table) {
-            $table->id('user_id');
+        
+        Schema::create('t_user', function (Blueprint $table) {
+            $table->bigIncrements('user_id');
             $table->unsignedBigInteger('level_id');
-            $table->string('username',20)->unique();
-            $table->string('nama',100);
-            $table->string('password');
+            $table->string('username', 20);
+            $table->string('nama', 100);
+            $table->string('password', 255);
             $table->timestamps();
-            $table->foreign('level_id')->references('level_id')->on('m_level');
+         // Foreign key
+         $table->foreign('level_id')->references('level_id')->on('m_level')->onDelete('cascade');
         });
+
+        
     }
 
     /**
@@ -27,8 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('m_user', function (Blueprint $table) {
-            //
-        });
+        Schema::dropIfExists('t_user');
     }
 };
