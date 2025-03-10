@@ -28,15 +28,14 @@ class UserController extends Controller
         $level = LevelModel::all(); // Ambil semua level
         $activeMenu = 'user';
 
-        return view('user.index', [
+        return view('user.create', [
             'breadcrumb' => $breadcrumb,
             'page' => $page,
             'level' => $level,
-            'active_menu' => $activeMenu
+            'activeMenu' => $activeMenu
         ]);
     }
 
-    // Menyimpan data user
     public function store(Request $request)
     {
         $request->validate([
@@ -46,7 +45,6 @@ class UserController extends Controller
             'level_id' => 'required|integer',
         ]);
 
-        // Menyimpan data user
         UserModel::create([
             'username' => $request->username,
             'nama' => $request->nama,
@@ -56,7 +54,6 @@ class UserController extends Controller
 
         return redirect('/user')->with('success', 'Data user berhasil disimpan');
     }
-
     // Menampilkan daftar pengguna
     public function index()
     {
@@ -74,6 +71,9 @@ class UserController extends Controller
     {
         $users = UserModel::select('user_id', 'username', 'nama', 'level_id')
             ->with('level');
+             //filter data user berdasarkan level_id
+             if ($request->level_id) $users->where('level_id', $request->level_id);
+             $users = $users->get();
         return DataTables::of($users)
             // menambahkan kolom index / no urut (default nama kolom: DT_RowIndex)
             ->addIndexColumn()
@@ -84,7 +84,7 @@ class UserController extends Controller
                     url('/user/' . $user->user_id) . '">'
                     . csrf_field() . method_field('DELETE') .
                     '<button type="submit" class="btn btn-danger btn-sm" onclick="return
-confirm(\'Apakah Anda yakit menghapus data ini?\');">Hapus</button></form>';
+                confirm(\'Apakah Anda yakit menghapus data ini?\');">Hapus</button></form>';
                 return $btn;
             })
             ->rawColumns(['aksi']) // memberitahu bahwa kolom aksi adalah html
