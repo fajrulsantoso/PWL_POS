@@ -3,6 +3,7 @@
 use App\Http\Controllers\kategoriController;
 use App\Http\Controllers\levelContoroller;
 use App\Http\Controllers\userController;
+use App\Http\Controllers\WelcomeController;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
@@ -30,3 +31,4 @@ Route::post('/user/tambah_simpan', [UserController::class, 'tambah_simpan']);  /
 Route::get('/user/ubah/{id}', [UserController::class, 'ubah']);
 Route::post('/user/ubah_simpan/{id}', [UserController::class, 'ubah_simpan']);  // Tambah POST untuk ubah_simpan
 Route::get('/user/hapus/{id}', [UserController::class, 'hapus']);
+Route::get('/',[WelcomeController::class,'index']);
