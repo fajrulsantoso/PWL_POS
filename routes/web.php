@@ -1,13 +1,14 @@
 <?php
 
 use App\Http\Controllers\kategoriController;
-use App\Http\Controllers\levelContoroller;
-use App\Http\Controllers\userController;
+use App\Http\Controllers\levelContorol;
+use App\Http\Controllers\Supplier;
+use App\Http\Controllers\user;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\WelcomeController;
-use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
-/*
+/*s
 |--------------------------------------------------------------------------
 | Web Routes
 |--------------------------------------------------------------------------
@@ -17,18 +18,15 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+Route::get('/', [WelcomeController::class, 'index']);
 
-Route::get('/welcome', function () {
-    return view('welcome');
+Route::group(['prefix' => 'user'], function () {
+    Route::get('/', [UserController::class, 'index']); // menampilkan halaman awal user
+    Route::post('/list', [UserController::class, 'list']); // menampilkan data user dalam bentuk json untuk datatables
+    Route::get('/create', [UserController::class, 'create']); // menampilkan halaman form tambah user
+    Route::post('/', [UserController::class, 'store']); // menyimpan data user baru
+    Route::get('/{id}', [UserController::class, 'show']); // menampilkan detail user
+    Route::get('/{id}/edit', [UserController::class, 'edit']); // menampilkan halaman form edit user
+    Route::put('/{id}', [UserController::class, 'update']); // menyimpan perubahan data user
+    Route::delete('/{id}', [UserController::class, 'destroy']); // menghapus data user
 });
-
-
-Route::get('/level', [levelContoroller::class, 'index']);
-Route::get('/kategori', [kategoriController::class, 'index']);
-Route::get('/user', [userController::class, 'index']);
-Route::get('/user/tambah', [UserController::class, 'tambah']);
-Route::post('/user/tambah_simpan', [UserController::class, 'tambah_simpan']);  // Ganti GET jadi POST
-Route::get('/user/ubah/{id}', [UserController::class, 'ubah']);
-Route::post('/user/ubah_simpan/{id}', [UserController::class, 'ubah_simpan']);  // Tambah POST untuk ubah_simpan
-Route::get('/user/hapus/{id}', [UserController::class, 'hapus']);
-Route::get('/',[WelcomeController::class,'index']);
