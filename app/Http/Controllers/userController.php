@@ -70,7 +70,7 @@ class UserController extends Controller
     public function list(Request $request)
     {
         $users = UserModel::select('user_id', 'username', 'nama', 'level_id')
-            ->with('level:id,level_nama');
+            ->with('level');
              //filter data user berdasarkan level_id
              if ($request->level_id) $users->where('level_id', $request->level_id);
              $users = $users->get();

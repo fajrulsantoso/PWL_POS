@@ -2,23 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use SebastianBergmann\CodeUnit\FunctionUnit;
+use App\Http\Controllers\Controller;
+use App\Models\Level as LevelModel;
 
-class levelContoroller extends Controller
+class Level extends Controller
 {
     public function index()
     {
-        // DB::insert('insert into m_level (level_kode, level_nama, created_at) values (?, ?, ?)', ['CUS', 'pelanggan', now()]);
-        // return 'insert data baru berhasil';
+        $page = (object) ['title' => 'Daftar level yang terdaftar dalam sistem.'];
+        $breadcrumb = (object) [
+            'title' => 'Daftar Level',
+            'list' => ['Home', 'Level'],
+        ];
 
-        // $row = DB::update('UPDATE m_level SET level_nama = ? WHERE level_kode = ?', ['Customer', 'CUS']);
-        // return 'Update data berhasil. Jumlah data yang diupdate: '.$row.' baris';
-
-//         $row = DB::delete('delete from m_level where level_kode = ?', ['cus']);
-// return 'Delete data berhasil. Jumlah data yang dihapus: ' . $row . ' baris';
-$data = DB::select('select * from m_level');
-return view('level', ['data' => $data]);
     }
 }

@@ -5,7 +5,7 @@
         <div class="card-header">
             <h3 class="card-title">{{ $page->title }}</h3>
             <div class="card-tools">
-                <a class="btn btn-sm btn-primary mt-1" href="{{ url('level/create') }}">Tambah</a>
+                <a class="btn btn-sm btn-primary mt-1" href="{{ url('user/create') }}">Tambah</a>
             </div>
         </div>
         <div class="card-body">
@@ -31,12 +31,13 @@
                     </div>
                 </div>
             </div>
-            <table class="table table-bordered table-striped table-hover table-sm" id="table_level">
+            <table class="table table-bordered table-striped table-hover table-sm" id="table_user">
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>Kode</th>
+                        <th>Username</th>
                         <th>Nama</th>
+                        <th>Level Pengguna</th>
                         <th>Aksi</th>
                     </tr>
                 </thead>
@@ -51,10 +52,10 @@
 @push('js')
     <script>
         $(document).ready(function() {
-            var dataLevel = $('#table_level').DataTable({
+            var dataUser = $('#table_user').DataTable({
                 serverSide: true,
                 ajax: {
-                    "url": "{{ url('level/list') }}",
+                    "url": "{{ url('user/list') }}",
                     "dataType": "json",
                     "type": "POST",
                     "data": d => {
@@ -68,16 +69,22 @@
                         searchable: false
                     },
                     {
-                        data: "level_kode",
+                        data: "username",
                         className: "",
                         orderable: true,
                         searchable: true
                     },
                     {
-                        data: "level_nama",
+                        data: "nama",
                         className: "",
                         orderable: true,
                         searchable: true
+                    },
+                    {
+                        data: "level.level_nama",
+                        className: "",
+                        orderable: false,
+                        searchable: false
                     },
                     {
                         data: "aksi",
@@ -88,7 +95,7 @@
                 ]
             });
 
-            $('#level_id').on('change', () => dataLevel.ajax.reload());
+            $('#level_id').on('change', () => dataUser.ajax.reload());
         });
     </script>
 @endpush
