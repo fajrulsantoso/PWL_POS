@@ -39,7 +39,7 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'username' => 'required|string|min:3|unique:m_user,username',
+            'username' => 'required|string|min:3|unique:t_user,username',
             'nama' => 'required|string|max:100',
             'password' => 'required|min:5',
             'level_id' => 'required|integer',
@@ -70,7 +70,7 @@ class UserController extends Controller
     public function list(Request $request)
     {
         $users = UserModel::select('user_id', 'username', 'nama', 'level_id')
-            ->with('level');
+            ->with('level:id,level_nama');
              //filter data user berdasarkan level_id
              if ($request->level_id) $users->where('level_id', $request->level_id);
              $users = $users->get();
@@ -125,7 +125,7 @@ class UserController extends Controller
 
     public function update(Request $request, string $id) {
         $request->validate([
-            'username' => 'required|string|min:3|unique:m_user,username,' . $id . ',user_id',
+            'username' => 'required|string|min:3|unique:t_user,username,' . $id . ',user_id',
             'nama' => 'required|string|max:100',
             'password' => 'nullable|min:5',
             'level_id' => 'required|integer',

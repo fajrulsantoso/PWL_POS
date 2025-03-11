@@ -20,8 +20,8 @@ return new class extends Migration
             $table->timestamps();
 
             // Foreign keys
-            $table->foreign('barang_id')->references('barang_id')->on('m_barang')->onDelete('cascade');
-            $table->foreign('user_id')->references('user_id')->on('m_user')->onDelete('cascade');
+            $table->foreign('barang_id')->references('barang_id')->on('m_barang');
+            $table->foreign('user_id')->references('user_id')->on('t_user');
         });
     }
 
@@ -33,3 +33,4 @@ return new class extends Migration
         Schema::dropIfExists('t_stok');
     }
 };
+
