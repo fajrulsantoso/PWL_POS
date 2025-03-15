@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Monolog\Level;
 use App\Models\UserModel;
 use Illuminate\View\View;
 use App\Models\LevelModel;
