@@ -87,3 +87,5 @@ Route::group(['prefix' => 'supplier'], function () {
     Route::put('/{id}', [SupplierController::class, 'update']);     // menyimpan perubahan data supplier 
     Route::delete('/{id}', [SupplierController::class, 'destroy']); // menghapus data supplier
 });
+
+

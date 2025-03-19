@@ -69,9 +69,9 @@
     });
 }
 
-
+var data_user;
     $(document).ready(() => {
-        let data_user = $('#table_user').DataTable({
+       data_user = $('#table_user').DataTable({
             serverSide: true,
             ajax: {
                 url: "{{ url('user/list') }}",
