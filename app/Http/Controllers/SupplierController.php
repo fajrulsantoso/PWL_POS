@@ -6,8 +6,11 @@ use Illuminate\View\View;
 use Illuminate\Http\Request;
 use App\Models\SupplierModel;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Routing\Redirector;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Response;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Facades\Validator;
 
 class SupplierController extends Controller
 {
@@ -117,4 +120,90 @@ class SupplierController extends Controller
         SupplierModel::find($id)->delete();
         return redirect('/supplier')->with('success', 'Data supplier berhasil dihapus.');        
     }
+
+
+
+    public function create_ajax(): View
+    {
+        return view('supplier.create_ajax', ['supplier' => SupplierModel::all()]);
+    }
+
+    public function store_ajax(Request $request): JsonResponse|Redirector|RedirectResponse
+    {
+        if ($request->ajax() || $request->wantsJson()) {
+            $validator = Validator::make($request->all(), [
+                'supplier_kode' => 'required|string|min:3|max:6|regex:/^(?=.*[A-Z])(?=.*[0-9])[A-Z0-9]+$/|unique:m_supplier,supplier_kode',
+                'supplier_nama' => 'required|string|min:3|max:50|regex:/^[a-zA-Z\s.]+$/',
+                'supplier_alamat' => 'required|string|min:10|max:100|regex:/^[a-zA-Z0-9\s.,-]+$/',
+            ]);
+    
+            if ($validator->fails()) {
+                return Response::json([
+                    'status'   => false,
+                    'message'  => 'Validasi Gagal.',
+                    'message_field' => $validator->errors(),
+                ]);
+            }
+
+            SupplierModel::create([
+                'supplier_kode' => $request->supplier_kode,
+                'supplier_nama' => $request->supplier_nama,
+                'supplier_alamat' => $request->supplier_alamat,
+            ]);
+
+            return Response::json(['status'  => true, 'message' => 'Data supplier berhasil disimpan']);
+        }
+        return redirect('/supplier');
+    }
+
+    public function edit_ajax(string $id): View
+    {
+        return view('supplier.edit_ajax', ['supplier' => SupplierModel::find($id)]);
+    }
+
+    public function update_ajax(Request $request, string $id): JsonResponse|Redirector|RedirectResponse
+    {
+        if ($request->ajax() || $request->wantsJson()) {
+            $validator = Validator::make($request->all(), [
+                'supplier_kode' => 'nullable|string|min:3|max:6|regex:/^(?=.*[A-Z])(?=.*[0-9])[A-Z0-9]+$/',
+                'supplier_nama' => 'required|string|min:3|max:50|regex:/^[a-zA-Z\s.]+$/',
+                'supplier_alamat' => 'required|string|min:10|max:100|regex:/^[a-zA-Z0-9\s.,-]+$/',
+            ]);
+
+            if ($validator->fails()) return Response::json(['status' => false, 'message' => 'Validasi Gagal.', 'message_field' => $validator->errors()]);
+
+            if (SupplierModel::find($id)) {
+                SupplierModel::find($id)->update([
+                    'supplier_kode' => $request->supplier_kode,
+                    'supplier_nama' => $request->supplier_nama,
+                    'supplier_alamat' => $request->supplier_alamat,
+                ]);
+
+                return Response::json(['status' => true, 'message' => 'Data berhasil diperbarui.']);
+            } else {
+                return Response::json(['status' => false, 'message' => 'Data tidak ditemukan.']);
+            }
+        }
+        return redirect('/supplier');
+    }
+
+    public function confirm_ajax(string $id): View
+    {
+        return view('supplier.confirm_ajax', ['supplier' => SupplierModel::find($id)]);
+    }
+
+    public function delete_ajax(Request $request, string $id): JsonResponse|Redirector|RedirectResponse
+    {
+        if ($request->ajax() || $request->wantsJson()) {
+            if (SupplierModel::find($id)) {
+                SupplierModel::find($id)->delete();
+                return Response::json(['status' => true, 'message' => 'Data berhasil dihapus.']);
+            } else {
+                return Response::json(['status' => false, 'message' => 'Data tidak ditemukan.']);
+            }
+        }
+
+        return redirect('/level');
+    }
 }
+

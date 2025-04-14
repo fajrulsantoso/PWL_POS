@@ -2,13 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
+use Illuminate\View\View;
+use Illuminate\Http\Request;
 use App\Models\KategoriModel;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Routing\Redirector;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-use Illuminate\View\View;
+use Illuminate\Support\Facades\Response;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Facades\Validator;
 
 class kategoriController extends Controller
 {
@@ -89,7 +92,7 @@ class kategoriController extends Controller
             'breadcrumb' => $breadcrumb,
             'page' => $page,
             'kategori' => KategoriModel::find($id),
-            'active_menu' => 'kategori',
+            'activeMenu' => 'kategori',
         ]);
     }
 
@@ -113,5 +116,39 @@ class kategoriController extends Controller
         if (!KategoriModel::find($id)) return redirect('/kategori')->with('error', 'Data kategori tidak ditemukan.');
         KategoriModel::find($id)->delete();
         return redirect('/kategori')->with('success', 'Data kategori berhasil dihapus.');        
+    }
+
+
+
+    
+    public function create_ajax(): View
+    {
+        return view('kategori.create_ajax', ['kategori' => KategoriModel::all()]);
+    }
+
+    public function store_ajax(Request $request): JsonResponse|Redirector|RedirectResponse
+    {
+        if ($request->ajax() || $request->wantsJson()) {
+            $validator = Validator::make($request->all(), [
+                'kategori_kode' => 'required|string|max:6|regex:/^[A-Z0-9]+$/',
+                'kategori_nama' => 'required|string|min:3|max:50|regex:/^[a-zA-Z\s]+$/',
+            ]);
+    
+            if ($validator->fails()) {
+                return Response::json([
+                    'status'   => false,
+                    'message'  => 'Validasi Gagal.',
+                    'message_field' => $validator->errors(),
+                ]);
+            }
+
+            KategoriModel::create([
+                'kategori_kode' => $request->kategori_kode,
+                'kategori_nama' => $request->kategori_nama,
+            ]);
+
+            return Response::json(['status'  => true, 'message' => 'Data kategori berhasil disimpan']);
+        }
+        return redirect('/kategori');
     }
 }

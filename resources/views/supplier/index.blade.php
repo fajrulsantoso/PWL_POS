@@ -6,6 +6,9 @@
             <h3 class="card-title">{{ $page->title }}</h3>
             <div class="card-tools">
                 <a class="btn btn-sm btn-primary mt-1" href="{{ url('supplier/create') }}">Tambah</a>
+                <button onclick="modal_action('{{ url('/supplier/create-ajax') }}')" class="btn btn-sm btn-success mt-1">
+                    Tambah AJAX
+                </button>
             </div>
         </div>
         <div class="card-body">
@@ -15,22 +18,6 @@
             @if (session('error'))
                 <div class="alert alert-danger">{{ session('error') }}</div>
             @endif
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="form-group row">
-                        <label for="" class="col-1 control-label col-form-label">Filter:</label>
-                        <div class="col-3">
-                            <select name="supplier_id" id="supplier_id" class="form-control" required>
-                                <option value="">- Semua -</option>
-                                @foreach ($supplier as $item)
-                                    <option value="{{ $item->supplier_id }}">{{ $item->supplier_nama }}</option>
-                                @endforeach
-                            </select>
-                            <small class="form-text text-muted">Supplier</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
             <table class="table table-bordered table-striped table-hover table-sm" id="table_supplier">
                 <thead>
                     <tr>
@@ -44,6 +31,16 @@
             </table>
         </div>
     </div>
+    <div
+        id="my-modal"
+        class="modal fade animate shake"
+        tabindex="-1"
+        role="dialog"
+        databackdrop="static"
+        data-keyboard="false"
+        data-width="75%"
+        aria-hidden="true"
+    ></div>
 @endsection
 
 @push('css')
@@ -51,6 +48,7 @@
 
 @push('js')
     <script>
+        const modal_action = (url = '') => $('#my-modal').load(url, () => $('#my-modal').modal('show'));
         $(document).ready(function() {
             var dataLevel = $('#table_supplier').DataTable({
                 serverSide: true,

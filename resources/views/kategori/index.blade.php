@@ -4,9 +4,23 @@
     <div class="card card-outline card-primary">
         <div class="card-header">
             <h3 class="card-title">{{ $page->title }}</h3>
+              
+            <div id="myModal" class="modal fade" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                    </div>
+                </div>
+            </div>
+            
+
             <div class="card-tools">
                 <a class="btn btn-sm btn-primary mt-1" href="{{ url('kategori/create') }}">Tambah</a>
+                <button onclick="modalAction('{{ url('kategori/create_ajax') }}')" class="btn btn-sm btn-success mt-1">Tambah Ajax</button>
+
             </div>
+        </div>
+
+
         </div>
         <div class="card-body">
             @if (session('success'))
@@ -50,8 +64,16 @@
 
 @push('js')
     <script>
+        function modalAction(url) {
+            $.get(url, function(response) {
+                $('#myModal').html(response).modal('show');
+            }).fail(function() {
+                alert('Gagal memuat data.');
+            });
+        }
+
         $(document).ready(function() {
-            var dataLevel = $('#table_kategori').DataTable({
+            var data_kategori = $('#table_kategori').DataTable({
                 serverSide: true,
                 ajax: {
                     "url": "{{ url('kategori/list') }}",
@@ -61,7 +83,8 @@
                         d.kategori_id = $('#kategori_id').val();
                     },
                 },
-                columns: [{
+                columns: [
+                    {
                         data: "DT_RowIndex",
                         className: "text-center",
                         orderable: false,
@@ -88,7 +111,8 @@
                 ]
             });
 
-            $('#kategori_id').on('change', () => dataLevel.ajax.reload());
+            $('#kategori_id').on('change', () => data_kategori.ajax.reload());
         });
     </script>
 @endpush
+
