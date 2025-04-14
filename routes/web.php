@@ -20,6 +20,22 @@ use Monolog\Level;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+
+
+Route::pattern('id', '[0-9]+'); // artinya ketika ada parameter (id), maka harus berupa angka
+
+Route::get('login', [AuthController::class, 'login'])->name('login');
+Route::post('login', [AuthController::class, 'postlogin']);
+Route::get('logout', [AuthController::class, 'logout'])->middleware('auth');
+// Register
+Route::get('register', [AuthController::class, 'register'])->name('register');
+Route::post('register', [AuthController::class, 'postregister']);
+Route::middleware(['auth'])->group(function () { // artinya semua route di dalam group ini harus login dulu
+
+                           // masukkan semua route yang perlu autentikasi di sini
+
+});
+
 Route::get('/', [WelcomeController::class, 'index']);
 
 Route::group(['prefix' => 'user'], function () {
@@ -46,7 +62,7 @@ Route::delete('/{id}/delete_ajax', [UserController::class, 'delete_ajax']); // U
 
 
 
-Route::group(['prefix' => 'level'], function () {
+Route::middleware(['authorize:ADM'])->prefix('level')->group(function () {
     Route::get('/create_ajax', [LevelController::class, 'create_ajax']); // Pindah ke atas sebelum /{id}
     Route::post('/ajax', [LevelController::class, 'store_ajax']);
 
@@ -125,14 +141,3 @@ Route::group(['prefix' => 'supplier'], function () {
 });
 
 
-Route::pattern('id', '[0-9]+'); // artinya ketika ada parameter (id), maka harus berupa angka
-
-Route::get('login', [AuthController::class, 'login'])->name('login');
-Route::post('login', [AuthController::class, 'postlogin']);
-Route::get('logout', [AuthController::class, 'logout'])->middleware('auth');
-
-Route::middleware(['auth'])->group(function () { // artinya semua route di dalam group ini harus login dulu
-
-                           // masukkan semua route yang perlu autentikasi di sini
-
-});
