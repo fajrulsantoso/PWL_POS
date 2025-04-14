@@ -277,52 +277,52 @@ class BarangController extends Controller
         return redirect('/barang');
     }
 
-    // public function export_excel(): never
-    // {
-    //     $barang = BarangModel::select('kategori_id', 'barang_kode', 'barang_nama', 'harga_beli', 'harga_jual')
-    //         ->orderBy('kategori_id')
-    //         ->with('kategori')
-    //         ->get();
+    public function export_excel(): never
+    {
+        $barang = BarangModel::select('kategori_id', 'barang_kode', 'barang_nama', 'harga_beli', 'harga_jual')
+            ->orderBy('kategori_id')
+            ->with('kategori')
+            ->get();
 
-    //     $spreadsheet = new Spreadsheet();
-    //     $sheet = $spreadsheet->getActiveSheet();
-    //     $sheet->setCellValue('A1', 'No');
-    //     $sheet->setCellValue('B1', 'Kode Barang');
-    //     $sheet->setCellValue('C1', 'Nama Barang');
-    //     $sheet->setCellValue('D1', 'Harga Beli');
-    //     $sheet->setCellValue('E1', 'Harga Jual');
-    //     $sheet->setCellValue('F1', 'Kategori');
-    //     $sheet->getStyle('A1:F1')->getFont()->setBold(true);
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setCellValue('A1', 'No');
+        $sheet->setCellValue('B1', 'Kode Barang');
+        $sheet->setCellValue('C1', 'Nama Barang');
+        $sheet->setCellValue('D1', 'Harga Beli');
+        $sheet->setCellValue('E1', 'Harga Jual');
+        $sheet->setCellValue('F1', 'Kategori');
+        $sheet->getStyle('A1:F1')->getFont()->setBold(true);
 
-    //     $number = 1;
-    //     $rows = 2;
-    //     foreach($barang as $key => $value) {
-    //         $sheet->setCellValue("A{$rows}" . $rows, $number);
-    //         $sheet->setCellValue("B{$rows}", $value->barang_kode);
-    //         $sheet->setCellValue("C{$rows}", $value->barang_nama);
-    //         $sheet->setCellValue("D{$rows}", $value->harga_beli);
-    //         $sheet->setCellValue("E{$rows}", $value->harga_jual);
-    //         $sheet->setCellValue("F{$rows}", $value->kategori->kategori_nama);
-    //         $rows++;
-    //         $number++;
-    //     };
+        $number = 1;
+        $rows = 2;
+        foreach($barang as $key => $value) {
+            $sheet->setCellValue("A{$rows}" . $rows, $number);
+            $sheet->setCellValue("B{$rows}", $value->barang_kode);
+            $sheet->setCellValue("C{$rows}", $value->barang_nama);
+            $sheet->setCellValue("D{$rows}", $value->harga_beli);
+            $sheet->setCellValue("E{$rows}", $value->harga_jual);
+            $sheet->setCellValue("F{$rows}", $value->kategori->kategori_nama);
+            $rows++;
+            $number++;
+        };
 
-    //     foreach(range('A', 'F') as $column) $sheet->getColumnDimension($column)->setAutoSize(true);
-    //     $sheet->setTitle('Data Barang');
-    //     $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+        foreach(range('A', 'F') as $column) $sheet->getColumnDimension($column)->setAutoSize(true);
+        $sheet->setTitle('Data Barang');
+        $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
 
-    //     header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-    //     header('Content-Disposition: attachment;filename="' . 'Data Barang ' . date('Y-m-d H:i:s') . '.xlsx' . '"');
-    //     header('Cache-Control: max-age=0');
-    //     header('Cache-Control: max-age=1');
-    //     header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
-    //     header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
-    //     header('Cache-Control: cache, must-revalidate');
-    //     header('Pragma: public');
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="' . 'Data Barang ' . date('Y-m-d H:i:s') . '.xlsx' . '"');
+        header('Cache-Control: max-age=0');
+        header('Cache-Control: max-age=1');
+        header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
+        header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
+        header('Cache-Control: cache, must-revalidate');
+        header('Pragma: public');
 
-    //     $writer->save('php://output');
-    //     exit;
-    // }
+        $writer->save('php://output');
+        exit;
+    }
 
     // public function export_pdf(): HttpResponse
     // {

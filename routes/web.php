@@ -112,7 +112,8 @@ Route::middleware(['auth'])->group(function () {
     Route::middleware(['authorize:ADM,MNG'])->prefix('kategori')->group(function () {
         Route::get('/import', [kategoriController::class, 'import']);
         Route::post('/import-ajax', [kategoriController::class, 'import_ajax']);
-
+        Route::get('/export-excel', [kategoriController::class, 'export_excel']);
+        Route::get('/export-pdf', [kategoriController::class, 'export_pdf']);
         Route::get('/create_ajax', [kategoriController::class, 'create_ajax']);       // Menampilkan halaman form tambah level AJAX
         Route::post('/ajax', [kategoriController::class, 'store_ajax']);              // Menampilkan halaman form tambah level AJAX
         Route::get('/', [kategoriController::class, 'index']);          // menampilkan halaman awal kategori 
