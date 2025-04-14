@@ -1,101 +1,76 @@
 <?php
-
 namespace App\Http\Controllers;
 
-use App\Models\User;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Response;
 use App\Models\LevelModel;
+use App\Models\UserModel; 
+use Illuminate\Contracts\Auth\Factory;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Routing\Redirector;
+use Illuminate\Support\Facades\Auth as Authentication;
+use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\View\View;
 
 class AuthController extends Controller
 {
-    // Tampilkan halaman login
-    public function login()
+    public function login(): Factory|Redirector|RedirectResponse|View
     {
-        if (Auth::check()) {
-            return redirect('/');
-        }
+        if (Authentication::check()) return redirect('/');
         return view('auth.login');
     }
 
-    // Proses login
-    public function postlogin(Request $request)
+    public function postlogin(Request $request): JsonResponse|Redirector|RedirectResponse
     {
         if ($request->ajax() || $request->wantsJson()) {
             $credentials = $request->only('username', 'password');
-
-            if (Auth::attempt($credentials)) {
-                return response()->json([
-                    'status' => true,
-                    'message' => 'Login Berhasil',
-                    'redirect' => url('/')
-                ]);
-            }
-
-            return response()->json([
-                'status' => false,
-                'message' => 'Login Gagal'
-            ]);
+            if (Authentication::attempt($credentials)) return response()->json(['status' => true, 'message' => 'Berhasil Masuk!', 'redirect' => url('/')]);
+            return response()->json(['status' => false, 'message' => 'Proses masuk gagal!']);
         }
 
         return redirect('login');
     }
 
-    // Logout user
-    public function logout(Request $request)
+    public function register(): Redirector|RedirectResponse|View
     {
-        Auth::logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-        return redirect('login');
-    }
-
-    // Tampilkan halaman registrasi
-    public function register()
-    {
-        if (Auth::check()) {
-            return redirect('/');
-        }
+        if (Authentication::check()) return redirect('/');
         $level = LevelModel::select('level_id', 'level_nama')->get();
         return view('auth.register', ['level' => $level]);
-        
     }
 
-    // Proses registrasi
-    public function postregister(Request $request)
+    public function postregister(Request $request): JsonResponse
     {
         if ($request->ajax() || $request->wantsJson()) {
             $rules = [
                 'level_id' => 'required|integer',
-                'username' => 'required|string|min:3|unique:m_user,username',
+                'username' => 'required|string|min:3|unique:t_user,username',
                 'nama' => 'required|string|max:100',
                 'password' => 'required|min:6'
             ];
-
+    
             $validator = Validator::make($request->all(), $rules);
-
+    
             if ($validator->fails()) {
                 return Response::json([
                     'status' => false,
                     'message' => $validator->errors()->first(),
-                    'msgField' => $validator->errors(),
+                    'message_field' => $validator->errors(),
                 ]);
             }
-
-            User::create($request->all());
-
-            return Response::json([
-                'status' => true,
-                'message' => 'Data pengguna berhasil disimpan.',
-                'redirect' => url('/login')
-            ]);
+    
+            UserModel::create($request->all());
+            return Response::json(['status' => true, 'message' => 'Data pengguna berhasil disimpan.', 'redirect' => url('/login')]);
         }
+    
+        return Response::json(['status' => false, 'message' => 'Format permintaan tidak valid!'], 400);
+    }
 
-        return Response::json([
-            'status' => false,
-            'message' => 'Format permintaan tidak valid!'
-        ], 400);
+    public function logout(Request $request): Redirector|RedirectResponse
+    {
+        Authentication::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        return redirect('login');
     }
 }
