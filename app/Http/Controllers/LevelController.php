@@ -338,17 +338,17 @@ public function export_excel()
     exit; 
 }
 
-// public function export_pdf(): HttpResponse
-// {
-//     $level = LevelModel::select('level_kode', 'level_nama')->orderBy('level_kode')->get();
+public function export_pdf(): HttpResponse
+{
+    $level = LevelModel::select('level_kode', 'level_nama')->orderBy('level_kode')->get();
 
-//     $pdf = Pdf::loadView('level.export-pdf', ['level' => $level]);
-//     $pdf->setPaper('a4', 'portrait');
-//     $pdf->setOption('isRemoteEnabled', true);
-//     $pdf->render();
+    $pdf = Pdf::loadView('level.export-pdf', ['level' => $level]);
+    $pdf->setPaper('a4', 'portrait');
+    $pdf->setOption('isRemoteEnabled', true);
+    $pdf->render();
 
-//     return $pdf->stream('Data Level ' . date('Y-m-d H:i:s') . '.pdf');
-// }
+    return $pdf->stream('Data Level ' . date('Y-m-d H:i:s') . '.pdf');
+}
 }
 
 

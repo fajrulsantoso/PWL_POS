@@ -10,10 +10,11 @@ use Illuminate\Routing\Redirector;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use PhpOffice\PhpSpreadsheet\IOFactory;
-use Illuminate\Support\Facades\Response;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Validator;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Http\Response; // Tambahkan ini
 
 class kategoriController extends Controller
 {
@@ -231,17 +232,16 @@ class kategoriController extends Controller
         $writer->save('php://output');
         exit;
     }
-
-    // public function export_pdf(): HttpResponse
-    // {
-    //     $kategori = KategoriModel::select('kategori_kode', 'kategori_nama')->orderBy('kategori_kode')->get();
+    public function export_pdf(): Response
+    {
+        $kategori = KategoriModel::select('kategori_kode', 'kategori_nama')->orderBy('kategori_kode')->get();
     
-    //     $pdf = Pdf::loadView('kategori.export-pdf', ['kategori' => $kategori]);
-    //     $pdf->setPaper('a4', 'portrait');
-    //     $pdf->setOption('isRemoteEnabled', true);
-    //     $pdf->render();
+        $pdf = Pdf::loadView('kategori.export-pdf', ['kategori' => $kategori]);
+        $pdf->setPaper('a4', 'portrait');
+        $pdf->setOption('isRemoteEnabled', true);
+        $pdf->render();
     
-    //     return $pdf->stream('Data Kategori '.date('Y-m-d H:i:s').'.pdf');
-    // }
+        return $pdf->stream('Data Kategori ' . date('Y-m-d H:i:s') . '.pdf');
+    }
 
 }

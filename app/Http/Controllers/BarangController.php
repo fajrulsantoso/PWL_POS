@@ -13,10 +13,11 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Http\RedirectResponse;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use Illuminate\Support\Facades\Response;
-use PhpOffice\PhpSpreadsheet\Writer\Pdf;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Validator;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Http\Response as HttpResponse;
 
 
 class BarangController extends Controller
@@ -324,19 +325,20 @@ class BarangController extends Controller
         exit;
     }
 
-    // public function export_pdf(): HttpResponse
-    // {
-    //     $barang = BarangModel::select('kategori_id', 'barang_kode', 'barang_nama', 'harga_beli', 'harga_jual')
-    //         ->orderBy('kategori_id')
-    //         ->orderBy('barang_kode')
-    //         ->with('kategori')
-    //         ->get();
-
-    //     $pdf = Pdf::loadView('barang.export-pdf', ['barang' => $barang]);
-    //     $pdf->setPaper('a4', 'portrait');
-    //     $pdf->setOption("isRemoteEnabled", true);
-    //     $pdf->render();
-
-    //     return $pdf->stream('Data Barang ' . date('Y-m-d H:i:s') . '.pdf');
-    // }
+   
+    public function export_pdf(): HttpResponse
+    {
+        $barang = BarangModel::select('kategori_id', 'barang_kode', 'barang_nama', 'harga_beli', 'harga_jual')
+            ->orderBy('kategori_id')
+            ->orderBy('barang_kode')
+            ->with('kategori')
+            ->get();
+    
+        $pdf = Pdf::loadView('barang.export-pdf', ['barang' => $barang]);
+        $pdf->setPaper('a4', 'portrait');
+        $pdf->setOption("isRemoteEnabled", true);
+        $pdf->render();
+    
+        return $pdf->stream('Data Barang ' . date('Y-m-d H:i:s') . '.pdf');
+    }
 }
